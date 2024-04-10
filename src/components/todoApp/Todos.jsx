@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
   demo,
+  demoChange,
   selected,
   add,
   remove,
@@ -12,7 +13,10 @@ import TodoItem from "./TodoItem";
 const Todos = () => {
   const [todoText, setTodoText] = useState("");
   const todosState = useSelector(selected);
+  const todosIndex = useSelector((store) => Object.keys(store.todoSlice.todos));
+  console.log(todosIndex);
   const dispatch = useDispatch();
+
   const addTodo = (text) => {
     dispatch(add({ text }));
     setTodoText("");
@@ -26,17 +30,35 @@ const Todos = () => {
   let handleclick = () => {
     dispatch(demo());
   };
-  const renderTodo = todosState.todos.map((todo, index) => (
+  const handleChange = (id, text) => {
+    dispatch(demoChange({ id, text }));
+  };
+  const demoRenderTodo = todosIndex.map((todosIndex) => (
     <TodoItem
-      key={todo.id}
-      data={todo}
-      index={index}
+      key={todosIndex}
+      index={todosIndex}
+      // index={index}
       handleDelete={deleteTodo}
       handleToggleDone={toggleTodo}
     />
   ));
+  // const renderTodo = todosState.todos.map((todo, index) => (
+  //   <TodoItem
+  //     key={todo.id}
+  //     data={todo}
+  //     index={index}
+  //     handleDelete={deleteTodo}
+  //     handleToggleDone={toggleTodo}
+  //   />
+  // ));
   return (
     <>
+      <button
+        onClick={() => handleChange(1, "Changes 1")}
+        className="btn btn-sm btn-info "
+      >
+        Change
+      </button>
       <input
         onChange={(e) => setTodoText(e.target.value)}
         value={todoText}
@@ -58,7 +80,7 @@ const Todos = () => {
             <th></th>
           </tr>
         </thead>
-        <tbody>{renderTodo}</tbody>
+        <tbody>{demoRenderTodo}</tbody>
       </table>
     </>
   );
